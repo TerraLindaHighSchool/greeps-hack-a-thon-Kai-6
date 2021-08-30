@@ -42,9 +42,12 @@ public class Greep extends Creature
                 move();
             }
         }
-        else {
+        if(atWater() || atWorldEdge()) {
+            turnHome();
             move();
+        } else {
             checkFood();
+            move();
         }
     }
     
@@ -56,6 +59,9 @@ public class Greep extends Creature
         // check whether there's a tomato pile here
         TomatoPile tomatoes = (TomatoPile) getOneIntersectingObject(TomatoPile.class);
         if (tomatoes != null) {
+            if(!seePaint("red")) {
+                spit("red"); 
+            }
             loadTomato();
             // Note: this attempts to load a tomato onto *another* Greep. It won't
             // do anything if we are alone here.
