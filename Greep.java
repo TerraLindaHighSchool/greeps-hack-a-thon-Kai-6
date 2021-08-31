@@ -10,7 +10,7 @@ public class Greep extends Creature
 {
     // Remember: you cannot extend the Greep's memory. So:
     // no additional fields (other than final fields) allowed in this class!
-    
+
     /**
      * Default constructor for testing purposes.
      */
@@ -18,13 +18,14 @@ public class Greep extends Creature
     {
         this(null);
     }
-    
+
     /**
      * Create a Greep with its home space ship.
      */
     public Greep(Ship ship)
     {
         super(ship);
+        setFlag(2, true);
     }
 
     /**
@@ -33,24 +34,60 @@ public class Greep extends Creature
     public void act()
     {
         super.act();   // do not delete! leave as first statement in act().
-        if (carryingTomato()) {
-            if (atShip()) {
-                dropTomato();
+        if(getFlag(2)) {
+            setMemory(Greenfoot.getRandomNumber(100));
+            if(getMemory() <= 25) {
+                setRotation(0);
+            } else if (getMemory() > 25 && getMemory() <= 50) {
+                setRotation(90);
+            } else if (getMemory() > 50 && getMemory() <= 75) {
+                setRotation(180);
+            } else {
+                setRotation(-90);
             }
-            else {
-                turnHome();
-                move();
-            }
+            setFlag(2, false);
         }
-        if(atWater() || atWorldEdge()) {
-            turnHome();
+        if(atWater()) {
+            spit("purple");
+            turn(45);
             move();
+            return;
         } else {
-            checkFood();
-            move();
+            if(atWorldEdge()) {
+                turn(10);
+                move();
+                return;
+            } else {
+
+                if(carryingTomato()) {
+                    if(atShip()) {
+                        turn(180);
+                        dropTomato();
+                        return;
+                    }
+                    checkFood();
+                    setFlag(1, false);
+                    if(seePaint("purple")) {
+                        move();
+                        return;
+                    }
+                    turnHome();
+                    move();
+                    return;
+                } else {
+                    if(getFlag(1)) {
+                        setFlag(1, false);
+                        checkFood();
+                        return;
+                    }
+                    move();
+                    checkFood();
+                    return;
+                }
+            }
         }
     }
-    
+
     /**
      * Is there any food here where we are? If so, try to load some!
      */
@@ -59,9 +96,7 @@ public class Greep extends Creature
         // check whether there's a tomato pile here
         TomatoPile tomatoes = (TomatoPile) getOneIntersectingObject(TomatoPile.class);
         if (tomatoes != null) {
-            if(!seePaint("red")) {
-                spit("red"); 
-            }
+            setFlag(1, true);
             loadTomato();
             // Note: this attempts to load a tomato onto *another* Greep. It won't
             // do anything if we are alone here.
@@ -73,7 +108,7 @@ public class Greep extends Creature
      */
     public static String getAuthorName()
     {
-        return "Anonymous";  // write your name here!
+        return "Kai";  // write your name here!
     }
 
     /**
