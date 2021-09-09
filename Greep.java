@@ -65,12 +65,12 @@ public class Greep extends Creature
                         dropTomato();
                         return;
                     }
-                    checkFood();
-                    setFlag(1, false);
                     if(seePaint("purple")) {
                         move();
                         return;
                     }
+                    checkFood();
+                    setFlag(1, false);
                     turnHome();
                     move();
                     return;
@@ -80,6 +80,7 @@ public class Greep extends Creature
                         checkFood();
                         return;
                     }
+                    spit("red");
                     move();
                     checkFood();
                     return;
